@@ -1,0 +1,14 @@
+
+开户（每个分区都是总量）
+customerstatus, companycertnumber, fixuretype, spcode, city, devicetype, data, voice, message
+状态，           公司，              区域，       运营商， 城市， 业务，       流量， 语音，  短信
+
+
+select spcode,city,devicetype,count(*) as '总计',
+count(customerstatus='在用' or NULL) as '在用',
+count(data = 1 and message != 1 and voice != 1) as '流量',
+count(distinct companycertnumber) as '公司',
+count(fixuretype!=1) as '区域'
+from tb_sub_xxx_wlw_day where ad = '2022050500' group by spcode,city,devicetype;
+
+select count(distinct phone) from xxx group by substr(ad, 0, 6)
