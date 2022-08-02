@@ -8,7 +8,7 @@ import common
 import matplotlib.pyplot as plt
 
 """
-用途： 数据降噪， 降维处理
+用途： 数据降噪， 降维处理, 压缩后用来比较搜索，
 """
 # 数据存放位置： C:\Users\echo\.keras\datasets
 
@@ -113,7 +113,43 @@ def show(autoencoder, x_test, count, *layer_names):
         pre = layer
     plt.show()
 
+# 压缩为2维后， 在坐标轴上查看
+def show3(autoencoder, x_test, y_test):
+    model = Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('compress').output)
+    y_pre = model.predict(x_test)
+    x_array = [ [],[],[],[],[],[],[],[],[],[] ]
+    y_array = [ [],[],[],[],[],[],[],[],[],[] ]
 
+    for i in range(len(y_test)):
+        y = y_test[i]
+        t = y_pre[i]
+
+        xxx = x_array[y]
+        yyy = y_array[y]
+
+        xxx.append(t[0])
+        yyy.append(t[1])
+
+    for i in range(len(y_array)):
+        plt.scatter(x_array[i], y_array[i], label=str(i))
+
+    plt.legend()
+    plt.show()
+    
+# 给数据增加噪声
+def noise():
+    mnist = tf.keras.datasets.mnist
+    (x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+    # 生成带噪音的数据 随机生成一些数相加，然后提出小于0和大于1的数字。
+    noise_factor = 0.4
+    x_train_noisy = x_train + noise_factor * np.random.normal(size=x_train.shape)
+    x_test_noisy = x_test + noise_factor * np.random.normal(size=x_test.shape)
+
+    # 清理小于0与大于1的数据
+    x_train_noisy = np.clip(x_train_noisy, 0.0, 1.0)
+    x_test_noisy = np.clip(x_test_noisy, 0.0, 1.0)
+    
 def encode():
     # 64  32/16
     mnist = tf.keras.datasets.mnist
