@@ -4,6 +4,11 @@ if __name__ == '__main__':
     lines = open("./temp.csv").readlines()
     result = open("./temp2.csv", "w+")
     maps = {}
+    operatorCodes = {
+        "1": "中国电信",
+        "2": "中国移动",
+        "3": "中国联通",
+    }
     provinceCodes = {
         "AH": "安徽",
         "BJ": "北京",
@@ -16,7 +21,6 @@ if __name__ == '__main__':
         "HA": "河南",
         "HB": "湖北",
         "HE": "河北",
-        "HI": "湖南",
         "HN": "湖南",
         "JL": "吉林",
         "JS": "江苏",
@@ -36,8 +40,9 @@ if __name__ == '__main__':
         "ZJ": "浙江",
         "AM": "澳门",
         "XG": "香港",
-        "HL": "内蒙古自治区",
-        "NM": "内蒙古",
+        "HL": "黑龙江",
+        "NM": "内蒙古自治区",
+        "HI": "海南",
     }
     provinces = [
         "北京",
@@ -84,11 +89,11 @@ if __name__ == '__main__':
             cp2 = int(words[5]) / int(words[4]) * 100
         else:
             cp2 = 0
-        key = provinceCodes.get(words[1],"") + words[0]
+        key = provinceCodes.get(words[1],"") + "," + operatorCodes.get(words[0]) + ","
         maps[key] = f"{words[2]},{words[3]},{'%.2f'%cp1}%,{words[4]},{words[5]},{'%.2f'%cp2}%"
 
     for province in provinces:
         for i in range(3):
-            key = province + str(i + 1)
-            result.write(maps.get(key, "") + "\n")
+            key = province + "," + operatorCodes.get(str(i + 1)) + ","
+            result.write(key + maps.get(key, "") + "\n")
             result.flush()

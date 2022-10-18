@@ -161,8 +161,6 @@ def load_data():
 
     lens = len(images)
     for i in range(image_size):
-        # img = Image.open(fr"{image_dir}\{images[i]}")
-        # arr = np.asarray(img, dtype="float32")
         img = tf.io.read_file(fr"{image_dir}\{images[i]}")
         img = tf.image.decode_jpeg(img, channels=3)  # RGBA,jpg
         img = tf.image.resize(img, [64, 64])
