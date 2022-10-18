@@ -17,6 +17,7 @@ def resize(image_path, image_size, resize, image_type='png'):
     图片预处理 1. 取中心部分 2. 缩放大小
     """
     img = tf.io.read_file(image_path)
+
     # 解码图片
     if(image_type == 'png' or image_type == 'rgba'):
         img = tf.image.decode_png(img,channels=3) # RGBA,PNG
@@ -25,6 +26,7 @@ def resize(image_path, image_size, resize, image_type='png'):
 
     # img_data = tf.image.convert_image_dtype(img, dtype=tf.float32)
     # 此方法会填充和裁剪图片
+
     img = tf.image.resize_with_crop_or_pad(img, image_size, image_size)
     img = tf.image.resize(img, [resize, resize])
     img = tf.cast(img, dtype=tf.uint8)
