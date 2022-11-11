@@ -1,9 +1,11 @@
+import sklearn.svm
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.cluster import KMeans
+from sklearn.svm import SVC
 from sklearn.metrics import silhouette_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -25,6 +27,15 @@ def train(iris, estimator):
 
     estimator.fit(x_train, y_train)
     print(estimator.score(x_test, y_test))
+
+    # y_pred = model.predict(X_test)
+    # y_pred_pro = model.predict_proba(X_test)
+    #
+    # print('ACC: %.4f' % metrics.accuracy_score(y_test, y_pred))
+    # print(metrics.classification_report(y_test, y_pred))
+    # skplt.metrics.plot_roc(y_test, y_pred_pro)
+    # skplt.metrics.plot_precision_recall_curve(y_test, y_pred_pro)
+    # skplt.metrics.plot_confusion_matrix(y_test, y_pred, normalize=True)
 
     # 将模型持久化
     joblib.dump(estimator, "test.pkl")
@@ -82,6 +93,10 @@ if __name__ == '__main__':
     # 聚类
     # km = KMeans(n_clusters=3)
 
+    # SVM
+    svm = SVC(kernel='linear', probability=True,  C=0.7)
+
+    train(iris, svm)
     # train(iris, nb)
     # train(iris, knn)
     # train(iris, tree)
@@ -92,4 +107,5 @@ if __name__ == '__main__':
     # print(estimator.score(iris.data, iris.target))
 
     # pca_demo()
-    grid_demo()
+    # grid_demo()
+
