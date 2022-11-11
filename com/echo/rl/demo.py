@@ -6,6 +6,7 @@ from matplotlib import pyplot as plt
 # Default parameters for plots
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras.models import *
 from tensorflow.keras import layers, optimizers, losses
 from PIL import Image
 
@@ -16,7 +17,7 @@ matplotlib.rcParams['font.family'] = ['KaiTi']
 matplotlib.rcParams['axes.unicode_minus'] = False
 
 env = gym.make('CartPole-v1')  # 创建游戏环境
-env.seed(2333)
+# env.seed(2333)
 tf.random.set_seed(2333)
 np.random.seed(2333)
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -26,7 +27,7 @@ learning_rate = 0.0002
 gamma = 0.98
 
 
-class Policy(keras.Model):
+class Policy(tf.keras.models.Model):
     # 策略网络，生成动作的概率分布
     def __init__(self):
         super(Policy, self).__init__()
@@ -70,10 +71,13 @@ def main():
     score = 0.0  # 计分
     print_interval = 20  # 打印间隔
     returns = []
+    # (array([-0.04476767, 0.00652568, 0.03927499, -0.00862368], dtype=float32), {})
+    # (array([-0.0303379, 0.04689051, 0.03483329, -0.04765128], dtype=float32), {})
 
     for n_epi in range(400):
         s = env.reset()  # 回到游戏初始状态，返回s0
         with tf.GradientTape(persistent=True) as tape:
+            s = s[0] # 新增加的, 可能是因为api的变动
             for t in range(501):  # CartPole-v1 forced to terminates at 500 step.
                 # 送入状态向量，获取策略
                 s = tf.constant(s, dtype=tf.float32)
@@ -83,7 +87,7 @@ def main():
                 # 从类别分布中采样1个动作, shape: [1]
                 a = tf.random.categorical(tf.math.log(prob), 1)[0]
                 a = int(a)  # Tensor转数字
-                s_prime, r, done, info = env.step(a)
+                s_prime, r, done, info, w = env.step(a) # w是新增加的, api变动
                 # 记录动作a和动作产生的奖励r
                 # prob shape:[1,2]
                 pi.put_data((r, tf.math.log(prob[0][a])))
